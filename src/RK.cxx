@@ -14,28 +14,28 @@ RK::RK(double R[], double T, double Par[], double H, double T_Max){
   
   ofstream output;
   output.open("Output/datos.dat");
-  
+
   Initialize_vectors();
   Coefficients();
-  
+
   while(T < T_Max){
-    
+
     for(k = 1; k <= number; k ++){
       r_Aux[k - 1] = R[k - 1];
     }
     t_Aux = T;
-    
+
     Dot_F(r_Aux, t_Aux, Par, r_p);
     
     for(k = 1; k <= number; k ++){
       KR[(k - 1)*m + (1 - 1)] = r_p[k - 1];
     }
-    
+
     for(k = 1; k <= number; k ++){
       Fip[k - 1] = b_ip[0]*KR[(k - 1)*m + (1 - 1)];
       Fiq[k - 1] = b_iq[0]*KR[(k - 1)*m + (1 - 1)];
     }
-    
+
     for (i = 2; i <= m; i++){
       //sum_{j=1}^{i-1} a_ij k_j-----------------------------------------------
       for(k = 1; k <= number; k ++){
@@ -52,7 +52,7 @@ RK::RK(double R[], double T, double Par[], double H, double T_Max){
         r_Aux[k - 1] = R[k - 1] + H*S_r[k - 1];
       }
       t_Aux = T + H*c_i[i - 1];
-      
+
       Dot_F(r_Aux, t_Aux,Par, r_p);
       //K = F(R_Aux)-----------------------------------------------------------
       for(k = 1; k <= number; k ++){
@@ -60,18 +60,18 @@ RK::RK(double R[], double T, double Par[], double H, double T_Max){
         Fip[k - 1] += b_ip[i - 1]*KR[(k - 1)*m + (i - 1)];
         Fiq[k - 1] += b_iq[i - 1]*KR[(k - 1)*m + (i - 1)];
       }
-      
+
     }
     //R_{n+1} = R_{n} + Sum_{i}^{s} b_{i}k_{i}------------------------------- 
     delta = 0.0;
     for(k = 1; k <= number; k ++){
       Eta_p[k - 1] = R[k - 1] + H * Fip[k - 1];
       Eta_q[k - 1] = R[k - 1] + H * Fiq[k - 1];
-      
+
       delta +=  abs(Eta_p[k - 1] - Eta_q[k - 1])*abs(Eta_p[k - 1] - Eta_q[k - 1]);
     }
     delta = sqrt(delta);
-    
+
     if(delta <= Tolerance){       
       T += H;
       output << T;
@@ -94,12 +94,12 @@ void RK::Initialize_vectors(){
   
   Fip.resize(number, 0.0);
   Eta_p.resize(number, 0.0);
-  
+
   Fiq.resize(number, 0.0);
   Eta_q.resize(number, 0.0);
-  
+
   KR.resize(number*m, 0.0);
-  
+
 }
 
 //=============================Butcher matrix definition=============================
@@ -108,7 +108,7 @@ void RK::Coefficients(){
   c_i.resize(m, 0.0);
   b_ip.resize(m, 0.0);
   b_iq.resize(m, 0.0);
-  
+
   /*
   High order embedded Runge-Kutta formulae, by P.J.Prince and J.R.Dormand, 
   Journal of Computational and Applied Mathematics, vol. 7, 1981, pages 67-75.
