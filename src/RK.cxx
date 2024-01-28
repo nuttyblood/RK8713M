@@ -14,6 +14,12 @@ RK::RK(double R[], double T, double Par[], double H, double T_Max){
   
   ofstream output;
   output.open("Output/datos.dat");
+  
+  output << "#\ttime";
+  for(k = 1; k <= number; k ++){
+    output << "\t" << "R[" << k - 1 << "]";
+  }
+  output << endl; 
 
   Initialize_vectors();
   Coefficients();
