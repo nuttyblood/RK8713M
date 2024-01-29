@@ -85,10 +85,15 @@ RK::RK(double R[], double T, double Par[], double H, double T_Max){
         R[k - 1] = Eta_q[k - 1];
         output << "\t" << R[k - 1];
       }
-      output << endl;    
+      output << endl;
+      // H_{n+1}
+      H = 0.9*H*pow(Tolerance/delta, 1.0/(7.0 + 1.0));
     }
-    // H_{n+1}
-    H = 0.9*H*pow(Tolerance/delta, 1.0/(7.0 + 1.0));
+    else{
+      // H_{n+1}
+      H = 0.9*H*pow(Tolerance/delta, 1.0/7.0);
+    }
+    
   }
 }
 
